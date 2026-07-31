@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#E7EAEE;
+    --surface:#FCFDFE;
+    --ink:#16202B;
+    --muted:#65758B;
+    --line:#CFD6DE;
+    --accent:#1F6F6B;
+    --accent-2:#4A5FB8;
+    --up:#1F6F6B;
+    --down:#B4432E;
+    --r:10px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans Thai",system-ui,sans-serif;
+    font-size:15px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 64px}
+
+  /* ---- header: ป้ายกำกับแนวตั้งเป็น signature ของหน้า ---- */
+  header{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    gap:20px;padding-bottom:18px;margin-bottom:22px;
+    border-bottom:2px solid var(--ink);
+  }
+  h1{
+    font-family:"Bai Jamjuree",sans-serif;
+    font-weight:700;font-size:clamp(26px,4vw,38px);
+    letter-spacing:-.02em;margin:0;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+    display:block;margin-bottom:6px;
+  }
+  header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+  .stamp{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:5px 12px;white-space:nowrap;
+  }
+
+  /* ---- KPI ---- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+  .kpi{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:16px 16px 12px;position:relative;overflow:hidden;
+  }
+  .kpi .label{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+  .kpi .value{font-family:"Bai Jamjuree",sans-serif;font-weight:600;font-size:27px;letter-spacing:-.02em}
+  .kpi .delta{font-size:12px;font-weight:600;margin-top:2px}
+  .delta.up{color:var(--up)} .delta.down{color:var(--down)}
+  .kpi svg{display:block;width:100%;height:30px;margin-top:8px;opacity:.85}
+
+  /* ---- grid ---- */
+  .grid{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;margin-bottom:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+  .card h2{
+    font-family:"Bai Jamjuree",sans-serif;font-size:15px;font-weight:600;
+    margin:0 0 14px;display:flex;align-items:center;gap:9px;
+  }
+  .card h2::before{content:"";width:3px;height:15px;background:var(--accent);border-radius:2px}
+  .chart-box{position:relative;height:280px}
+
+  /* ---- table ---- */
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{
+    text-align:left;font-weight:500;color:var(--muted);font-size:11px;
+    letter-spacing:.08em;text-transform:uppercase;
+    font-family:"IBM Plex Mono",monospace;
+    padding:0 10px 9px;border-bottom:1px solid var(--line);
+  }
+  td{padding:11px 10px;border-bottom:1px solid #EDF0F3}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#F3F6F8}
+  .ta-r{text-align:right}
+  .pill{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .pill.up{background:#E3F0EE;color:var(--up)}
+  .pill.down{background:#F7E6E2;color:var(--down)}
+
+  footer{margin-top:26px;font-size:12px;color:var(--muted);text-align:center}
+
+  @media (max-width:900px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid{grid-template-columns:1fr}
+    header{flex-direction:column;align-items:flex-start;gap:10px}
+  }
+  @media (max-width:520px){ .kpis{grid-template-columns:1fr} }
+  @media (prefers-reduced-motion:no-preference){
+    .kpi,.card{animation:rise .45s cubic-bezier(.2,.7,.3,1) backwards}
+    .kpi:nth-child(2){animation-delay:.05s}
+    .kpi:nth-child(3){animation-delay:.1s}
+    .kpi:nth-child(4){animation-delay:.15s}
+    @keyframes rise{from{opacity:0;transform:translateY(8px)}}
+  }
+  :focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <span class="eyebrow">Dashboard</span>
+      <h1 id="title">กำลังโหลด…</h1>
+      <p id="subtitle"></p>
+    </div>
+    <div class="stamp" id="stamp">—</div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>ยอดขายรายเดือน</h2>
+      <div class="chart-box"><canvas id="lineChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>สัดส่วนตามช่องทาง</h2>
+      <div class="chart-box"><canvas id="barChart"></canvas></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>สินค้าขายดี</h2>
+    <div style="overflow-x:auto"><table id="table"></table></div>
+  </section>
+
+  <footer>ข้อมูลจาก <code>data.json</code> — แก้ไฟล์แล้ว push ใหม่ หน้าเว็บจะอัปเดตอัตโนมัติ</footer>
+</div>
+
+<script>
+const fmt = {
+  currency: n => "฿" + n.toLocaleString("th-TH"),
+  number:   n => n.toLocaleString("th-TH")
+};
+
+function sparkline(points){
+  const w = 100, h = 30, max = Math.max(...points), min = Math.min(...points);
+  const span = (max - min) || 1;
+  const d = points.map((p,i) =>
+    `${(i/(points.length-1))*w},${h - ((p-min)/span)*(h-4) - 2}`).join(" L");
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+    <polyline points="" fill="none"/>
+    <path d="M${d}" fill="none" stroke="var(--accent)" stroke-width="1.6"
+          vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+function renderKpis(kpis){
+  document.getElementById("kpis").innerHTML = kpis.map(k => {
+    const up = k.delta >= 0;
+    return `<article class="kpi">
+      <div class="label">${k.label}</div>
+      <div class="value num">${fmt[k.format](k.value)}</div>
+      <div class="delta ${up ? "up" : "down"} num">${up ? "▲" : "▼"} ${Math.abs(k.delta).toFixed(1)}%</div>
+      ${sparkline(k.spark)}
+    </article>`;
+  }).join("");
+}
+
+function renderTable(t){
+  const el = document.getElementById("table");
+  el.innerHTML =
+    `<thead><tr>${t.columns.map((c,i) =>
+      `<th class="${i>1?"ta-r":""}">${c}</th>`).join("")}</tr></thead>` +
+    `<tbody>${t.rows.map(r => `<tr>
+        <td>${r[0]}</td>
+        <td style="color:var(--muted)">${r[1]}</td>
+        <td class="ta-r num">${fmt.number(r[2])}</td>
+        <td class="ta-r num">${fmt.currency(r[3])}</td>
+        <td class="ta-r"><span class="pill ${r[4]>=0?"up":"down"} num">${r[4]>=0?"+":""}${r[4].toFixed(1)}%</span></td>
+      </tr>`).join("")}</tbody>`;
+}
+
+function charts(d){
+  const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+  Chart.defaults.font.family = "'IBM Plex Sans Thai', sans-serif";
+  Chart.defaults.color = css("--muted");
+  Chart.defaults.font.size = 12;
+
+  new Chart(document.getElementById("lineChart"), {
+    type: "line",
+    data: {
+      labels: d.monthly.labels,
+      datasets: d.monthly.series.map((s,i) => ({
+        label: s.name,
+        data: s.data,
+        borderColor: i === 0 ? css("--accent") : css("--accent-2"),
+        backgroundColor: i === 0 ? "rgba(31,111,107,.10)" : "transparent",
+        borderDash: i === 0 ? [] : [5,4],
+        fill: i === 0,
+        tension: .35,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        borderWidth: 2
+      }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: { legend: { position: "bottom", labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: "line" } } },
+      scales: {
+        y: { grid: { color: "#E9EDF1" }, border: { display: false },
+             ticks: { callback: v => (v/1000).toLocaleString("th-TH") + "k" } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById("barChart"), {
+    type: "bar",
+    data: {
+      labels: d.channels.map(c => c.name),
+      datasets: [{
+        data: d.channels.map(c => c.value),
+        backgroundColor: css("--accent"),
+        borderRadius: 4,
+        barThickness: 20
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+                 tooltip: { callbacks: { label: c => fmt.currency(c.parsed.x) } } },
+      scales: {
+        x: { grid: { color: "#E9EDF1" }, border: { display: false },
+             ticks: { callback: v => (v/1000).toLocaleString("th-TH") + "k" } },
+        y: { grid: { display: false }, border: { display: false } }
+      }
+    }
+  });
+}
+
+fetch("data.json")
+  .then(r => { if(!r.ok) throw new Error("โหลด data.json ไม่สำเร็จ (" + r.status + ")"); return r.json(); })
+  .then(d => {
+    document.title = d.meta.title;
+    document.getElementById("title").textContent = d.meta.title;
+    document.getElementById("subtitle").textContent = d.meta.subtitle;
+    document.getElementById("stamp").textContent = "หน่วย: " + d.meta.unit;
+    renderKpis(d.kpis);
+    renderTable(d.table);
+    charts(d);
+  })
+  .catch(e => {
+    document.getElementById("title").textContent = "เปิดข้อมูลไม่ได้";
+    document.getElementById("subtitle").textContent =
+      e.message + " — เปิดผ่านเว็บเซิร์ฟเวอร์ ไม่ใช่ double-click ไฟล์";
+  });
+</script>
+</body>
+</html>
