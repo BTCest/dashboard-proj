@@ -53,6 +53,25 @@
     border:1px solid var(--line);border-radius:999px;padding:6px 14px}
   nav a:hover{border-color:var(--calm);color:var(--calm)}
 
+  /* แถบบอกอายุของข้อมูล */
+  .vintage{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:14px 18px;margin-bottom:16px;display:grid;
+    grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+  .vintage .item{display:flex;flex-direction:column;gap:2px}
+  .vintage .k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--muted)}
+  .vintage .v{font-family:"Bai Jamjuree",sans-serif;font-size:16px;font-weight:600}
+  .vintage .sub{font-size:12px;color:var(--muted)}
+  .vintage .explain{grid-column:1/-1;border-top:1px solid #EDF1F4;padding-top:11px;
+    font-size:12.5px;color:var(--muted);line-height:1.5}
+  .vintage .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--calm);margin-inline-end:6px;vertical-align:middle}
+
+  /* ป้ายปีข้อมูลบนหัวกราฟ */
+  .yr{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;
+    color:var(--slate);background:#EDF1F4;border-radius:999px;padding:2px 9px;
+    margin-inline-start:8px;vertical-align:middle;white-space:nowrap}
+
   /* emergency */
   .sos{display:flex;flex-wrap:wrap;align-items:center;gap:16px;background:var(--urgent);
     color:#fff;border-radius:var(--r);padding:16px 22px;margin-bottom:16px;
@@ -151,6 +170,7 @@
     .two,.golden,.risk{grid-template-columns:1fr}
     .kpis{grid-template-columns:repeat(2,1fr)}
     .headline{grid-template-columns:1fr;gap:12px;text-align:center}
+    .vintage{grid-template-columns:1fr;gap:12px}
   }
   @media (max-width:560px){
     .befast{grid-template-columns:1fr}
@@ -189,6 +209,8 @@
   <div class="band" id="stats">
     <h2>สถานการณ์ในประเทศไทย</h2><div class="rule"></div><span class="tag">Statistics</span>
   </div>
+
+  <section class="vintage" id="vintage"></section>
 
   <section class="kpis" id="kpis"></section>
 
@@ -323,6 +345,39 @@ function baseLine(labels, datasets, yFmt){
   };
 }
 
+/* ใส่ชื่อกราฟพร้อมป้ายบอกปีของข้อมูล */
+function setTitle(id, text, vintage){
+  const el = $(id);
+  el.textContent = text;
+  if(vintage){
+    const b = document.createElement("span");
+    b.className = "yr";
+    b.textContent = "ข้อมูลปี " + vintage;
+    el.appendChild(b);
+  }
+}
+
+function renderVintage(v){
+  if(!v) return;
+  $("vintage").innerHTML = `
+    <div class="item">
+      <span class="k">ข้อมูลล่าสุดถึงปี</span>
+      <span class="v num">${v.latestYear}</span>
+      <span class="sub">รายละเอียดแยกชนิด/รายเขต ถึงปี ${v.detailYear}</span>
+    </div>
+    <div class="item">
+      <span class="k">ปรับปรุงหน้านี้</span>
+      <span class="v">${v.pageUpdated}</span>
+      <span class="sub">แก้ไขเนื้อหาครั้งล่าสุด</span>
+    </div>
+    <div class="item">
+      <span class="k">คาดว่าจะมีข้อมูลใหม่</span>
+      <span class="v"><span class="dot"></span>${v.nextExpected}</span>
+      <span class="sub">${v.nextNote}</span>
+    </div>
+    <p class="explain">${v.explain}</p>`;
+}
+
 function renderStats(s){
   Chart.defaults.font.family = "'IBM Plex Sans Thai', sans-serif";
   Chart.defaults.color = css("--muted");
@@ -331,7 +386,7 @@ function renderStats(s){
 
   // 1) อุบัติการณ์
   const i = s.incidence;
-  $("incTitle").textContent = i.title; $("incSub").textContent = i.sub; $("incIns").textContent = i.insight;
+  setTitle("incTitle", i.title, i.vintage); $("incSub").textContent = i.sub; $("incIns").textContent = i.insight;
   new Chart($("chartInc"), baseLine(s.years, i.series.map((x, n) => ({
     label: x.name, data: x.data,
     borderColor: palette[n], backgroundColor: "transparent",
@@ -341,7 +396,7 @@ function renderStats(s){
 
   // 2) อัตราเสียชีวิต
   const f = s.fatality;
-  $("fatTitle").textContent = f.title; $("fatSub").textContent = f.sub; $("fatIns").textContent = f.insight;
+  setTitle("fatTitle", f.title, f.vintage); $("fatSub").textContent = f.sub; $("fatIns").textContent = f.insight;
   const fc = [css("--urgent"), css("--ink"), css("--calm")];
   new Chart($("chartFat"), baseLine(s.years, f.series.map((x, n) => ({
     label: x.name, data: x.data,
@@ -351,7 +406,7 @@ function renderStats(s){
 
   // 3) rtPA
   const r = s.rtpa;
-  $("rtpaTitle").textContent = r.title; $("rtpaSub").textContent = r.sub; $("rtpaIns").textContent = r.insight;
+  setTitle("rtpaTitle", r.title, r.vintage); $("rtpaSub").textContent = r.sub; $("rtpaIns").textContent = r.insight;
   new Chart($("chartRtpa"), {
     type: "bar",
     data: { labels: s.years, datasets: [{ data: r.data, backgroundColor: css("--amber"), borderRadius: 5, barThickness: 34 }] },
@@ -368,7 +423,7 @@ function renderStats(s){
 
   // 4) รายเขตสุขภาพ
   const g = s.byRegion;
-  $("regTitle").textContent = g.title; $("regSub").textContent = g.sub; $("regIns").textContent = g.insight;
+  setTitle("regTitle", g.title, g.vintage); $("regSub").textContent = g.sub; $("regIns").textContent = g.insight;
   new Chart($("chartReg"), {
     type: "bar",
     data: { labels: g.labels, datasets: [{
@@ -392,7 +447,7 @@ function renderStats(s){
 
   // 5) แยกเพศ
   const x2 = s.bySex;
-  $("sexTitle").textContent = x2.title; $("sexIns").textContent = x2.insight;
+  setTitle("sexTitle", x2.title, x2.vintage); $("sexIns").textContent = x2.insight;
   new Chart($("chartSex"), {
     type: "doughnut",
     data: { labels: x2.labels, datasets: [{ data: x2.data,
@@ -454,6 +509,7 @@ fetch("data.json")
 
     $("caveats").innerHTML = d.caveats.map(c => `<li>${c}</li>`).join("");
 
+    renderVintage(d.dataVintage);
     renderStats(d.stats);
     renderGolden(d.goldenTime);
 
