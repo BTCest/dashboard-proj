@@ -3,266 +3,374 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard</title>
+<title>โรคหลอดเลือดสมอง (Stroke) — รู้ทันสัญญาณเตือน</title>
+<meta name="description" content="สัญญาณเตือนโรคหลอดเลือดสมอง BE FAST นาทีทอง 4.5 ชั่วโมง ปัจจัยเสี่ยง และสถิติในประเทศไทย">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg:#E7EAEE;
-    --surface:#FCFDFE;
-    --ink:#16202B;
-    --muted:#65758B;
-    --line:#CFD6DE;
-    --accent:#1F6F6B;
-    --accent-2:#4A5FB8;
-    --up:#1F6F6B;
-    --down:#B4432E;
-    --r:10px;
+    --bg:#EEF1F3;
+    --surface:#FFFFFF;
+    --ink:#14232E;
+    --muted:#5F7484;
+    --line:#D5DDE3;
+    --urgent:#C0292B;
+    --urgent-soft:#FBEDED;
+    --calm:#0F6A67;
+    --calm-soft:#E4F0EF;
+    --amber:#9A6206;
+    --r:12px;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth}
   body{
-    background:var(--bg);
-    color:var(--ink);
+    margin:0;background:var(--bg);color:var(--ink);
     font-family:"IBM Plex Sans Thai",system-ui,sans-serif;
-    font-size:15px;
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
+    font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased;
   }
   .num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
-  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 64px}
+  .wrap{max-width:1120px;margin:0 auto;padding:26px 18px 70px}
+  h1,h2,h3{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em;margin:0}
+  section{margin-bottom:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+  .sec-title{font-size:17px;font-weight:600;margin-bottom:4px}
+  .sec-note{font-size:13px;color:var(--muted);margin:0 0 16px}
 
-  /* ---- header: ป้ายกำกับแนวตั้งเป็น signature ของหน้า ---- */
+  /* ---------- header ---------- */
   header{
-    display:flex;align-items:flex-end;justify-content:space-between;
-    gap:20px;padding-bottom:18px;margin-bottom:22px;
-    border-bottom:2px solid var(--ink);
-  }
-  h1{
-    font-family:"Bai Jamjuree",sans-serif;
-    font-weight:700;font-size:clamp(26px,4vw,38px);
-    letter-spacing:-.02em;margin:0;
+    display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+    gap:16px;padding-bottom:16px;margin-bottom:18px;border-bottom:2px solid var(--ink);
   }
   .eyebrow{
-    font-family:"IBM Plex Mono",monospace;font-size:11px;
-    letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
-    display:block;margin-bottom:6px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;
   }
-  header p{margin:4px 0 0;color:var(--muted);font-size:13px}
-  .stamp{
-    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
-    border:1px solid var(--line);border-radius:999px;padding:5px 12px;white-space:nowrap;
+  h1{font-size:clamp(25px,4.4vw,37px);font-weight:700}
+  .tagline{color:var(--muted);font-size:14px;margin:5px 0 0}
+  .updated{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:5px 12px;white-space:nowrap}
+
+  /* ---------- emergency bar (signature) ---------- */
+  .sos{
+    display:flex;flex-wrap:wrap;align-items:center;gap:16px;
+    background:var(--urgent);color:#fff;border-radius:var(--r);
+    padding:16px 22px;margin-bottom:16px;text-decoration:none;
+    box-shadow:0 2px 0 #8E1F21;
+  }
+  .sos .ring{
+    width:44px;height:44px;flex:none;border-radius:50%;
+    border:2px solid rgba(255,255,255,.55);display:grid;place-items:center;font-size:20px;
+  }
+  .sos b{font-family:"Bai Jamjuree",sans-serif;font-size:30px;letter-spacing:.02em;line-height:1}
+  .sos .txt{font-size:13.5px;opacity:.92}
+  .sos .cta{margin-left:auto;font-size:13px;border:1px solid rgba(255,255,255,.5);
+    border-radius:999px;padding:7px 16px;white-space:nowrap}
+  @media (prefers-reduced-motion:no-preference){
+    .sos .ring{animation:pulse 2.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 0 0 9px rgba(255,255,255,0)}}
   }
 
-  /* ---- KPI ---- */
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
-  .kpi{
+  /* ---------- BE FAST ---------- */
+  .befast{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .sign{
     background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-    padding:16px 16px 12px;position:relative;overflow:hidden;
+    padding:16px;display:flex;gap:14px;align-items:flex-start;
   }
-  .kpi .label{font-size:12.5px;color:var(--muted);margin-bottom:6px}
-  .kpi .value{font-family:"Bai Jamjuree",sans-serif;font-weight:600;font-size:27px;letter-spacing:-.02em}
-  .kpi .delta{font-size:12px;font-weight:600;margin-top:2px}
-  .delta.up{color:var(--up)} .delta.down{color:var(--down)}
-  .kpi svg{display:block;width:100%;height:30px;margin-top:8px;opacity:.85}
-
-  /* ---- grid ---- */
-  .grid{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;margin-bottom:14px}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
-  .card h2{
-    font-family:"Bai Jamjuree",sans-serif;font-size:15px;font-weight:600;
-    margin:0 0 14px;display:flex;align-items:center;gap:9px;
+  .sign .ltr{
+    flex:none;width:42px;height:42px;border-radius:9px;
+    background:var(--urgent-soft);color:var(--urgent);
+    font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:22px;
+    display:grid;place-items:center;
   }
-  .card h2::before{content:"";width:3px;height:15px;background:var(--accent);border-radius:2px}
-  .chart-box{position:relative;height:280px}
+  .sign h3{font-size:15.5px;font-weight:600;margin-bottom:2px}
+  .sign .en{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);display:block}
+  .sign p{margin:5px 0 0;font-size:13.5px;color:var(--muted);line-height:1.55}
 
-  /* ---- table ---- */
-  table{width:100%;border-collapse:collapse;font-size:13.5px}
-  th{
-    text-align:left;font-weight:500;color:var(--muted);font-size:11px;
-    letter-spacing:.08em;text-transform:uppercase;
-    font-family:"IBM Plex Mono",monospace;
-    padding:0 10px 9px;border-bottom:1px solid var(--line);
-  }
-  td{padding:11px 10px;border-bottom:1px solid #EDF0F3}
-  tbody tr:last-child td{border-bottom:none}
-  tbody tr:hover{background:#F3F6F8}
-  .ta-r{text-align:right}
-  .pill{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
-  .pill.up{background:#E3F0EE;color:var(--up)}
-  .pill.down{background:#F7E6E2;color:var(--down)}
+  /* ---------- golden time ---------- */
+  .golden{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:22px;display:grid;grid-template-columns:1fr 1.35fr;gap:26px;align-items:center}
+  .dial{position:relative;display:grid;place-items:center}
+  .dial svg{width:100%;max-width:190px;height:auto;transform:rotate(-90deg)}
+  .dial .mid{position:absolute;text-align:center;line-height:1.15}
+  .dial .mid .big{font-family:"Bai Jamjuree",sans-serif;font-size:38px;font-weight:700;color:var(--urgent)}
+  .dial .mid .unit{font-size:12.5px;color:var(--muted)}
+  .golden h2{font-size:21px;font-weight:700;margin-bottom:8px}
+  .golden p{margin:0 0 12px;font-size:14.5px;color:#33475A}
+  .warn{background:var(--urgent-soft);border-inline-start:3px solid var(--urgent);
+    border-radius:0 8px 8px 0;padding:11px 14px;font-size:13.5px;color:#7E2224}
 
-  footer{margin-top:26px;font-size:12px;color:var(--muted);text-align:center}
+  /* ---------- kpis ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+  .kpi.hl{background:var(--calm-soft);border-color:#B9D8D6}
+  .kpi .v{font-family:"Bai Jamjuree",sans-serif;font-size:29px;font-weight:700;line-height:1.15}
+  .kpi.hl .v{color:var(--calm)}
+  .kpi .l{font-size:13.5px;margin-top:3px}
+  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:5px;
+    font-family:"IBM Plex Mono",monospace}
+
+  /* ---------- grids ---------- */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .chart-box{position:relative;height:250px}
+  .chart-note{font-size:11.5px;color:var(--muted);margin:10px 0 0;text-align:center}
+
+  .risk{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .risk li{list-style:none;background:#F7F9FA;border:1px solid #E5EBEF;border-radius:9px;padding:11px 13px}
+  .risk b{display:block;font-size:14px;font-weight:600}
+  .risk span{font-size:12.5px;color:var(--muted)}
+  ul.plain{margin:0;padding-inline-start:20px}
+  ul.plain li{margin-bottom:6px;font-size:14px;color:#33475A}
+
+  .dd h3{font-size:14.5px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+    padding:3px 9px;border-radius:999px}
+  .badge.ok{background:var(--calm-soft);color:var(--calm)}
+  .badge.no{background:var(--urgent-soft);color:var(--urgent)}
+  .dd ul{margin:0;padding:0;list-style:none}
+  .dd li{font-size:14px;padding:7px 0 7px 24px;position:relative;border-bottom:1px solid #EEF2F4}
+  .dd li:last-child{border-bottom:none}
+  .dd .ok-list li::before{content:"✓";position:absolute;inset-inline-start:0;color:var(--calm);font-weight:700}
+  .dd .no-list li::before{content:"✕";position:absolute;inset-inline-start:0;color:var(--urgent);font-weight:700}
+
+  .world{display:flex;flex-wrap:wrap;gap:26px;justify-content:space-around;
+    background:var(--ink);color:#fff;border-radius:var(--r);padding:22px}
+  .world div{text-align:center}
+  .world .v{font-family:"Bai Jamjuree",sans-serif;font-size:26px;font-weight:700}
+  .world .l{font-size:12.5px;opacity:.72}
+
+  .disc{background:#FDF6E7;border:1px solid #EBD9AE;border-radius:var(--r);
+    padding:14px 16px;font-size:13.5px;color:var(--amber)}
+  .src{font-size:13px;color:var(--muted)}
+  .src a{color:var(--calm)}
+  .src li{margin-bottom:5px}
 
   @media (max-width:900px){
+    .befast{grid-template-columns:repeat(2,1fr)}
+    .two,.golden,.risk{grid-template-columns:1fr}
     .kpis{grid-template-columns:repeat(2,1fr)}
-    .grid{grid-template-columns:1fr}
-    header{flex-direction:column;align-items:flex-start;gap:10px}
+    .golden{gap:18px}
   }
-  @media (max-width:520px){ .kpis{grid-template-columns:1fr} }
-  @media (prefers-reduced-motion:no-preference){
-    .kpi,.card{animation:rise .45s cubic-bezier(.2,.7,.3,1) backwards}
-    .kpi:nth-child(2){animation-delay:.05s}
-    .kpi:nth-child(3){animation-delay:.1s}
-    .kpi:nth-child(4){animation-delay:.15s}
-    @keyframes rise{from{opacity:0;transform:translateY(8px)}}
+  @media (max-width:560px){
+    .befast{grid-template-columns:1fr}
+    .sos .cta{margin-left:0}
   }
-  :focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+  :focus-visible{outline:2px solid var(--calm);outline-offset:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <header>
     <div>
-      <span class="eyebrow">Dashboard</span>
+      <span class="eyebrow">Health Dashboard</span>
       <h1 id="title">กำลังโหลด…</h1>
-      <p id="subtitle"></p>
+      <p class="tagline" id="tagline"></p>
     </div>
-    <div class="stamp" id="stamp">—</div>
+    <div class="updated" id="updated"></div>
   </header>
+
+  <a class="sos" id="sos" href="tel:1669">
+    <span class="ring" aria-hidden="true">☎</span>
+    <span>
+      <b class="num">1669</b>
+      <span class="txt" id="sosTxt"></span>
+    </span>
+    <span class="cta">แตะเพื่อโทร</span>
+  </a>
+
+  <section>
+    <h2 class="sec-title">สัญญาณเตือน — จำให้ได้ว่า BE FAST</h2>
+    <p class="sec-note">มีเพียงข้อเดียวก็ต้องรีบ ไม่ต้องรอให้ครบทุกข้อ</p>
+    <div class="befast" id="befast"></div>
+  </section>
+
+  <section class="golden" id="golden"></section>
 
   <section class="kpis" id="kpis"></section>
 
-  <section class="grid">
+  <section class="two">
     <div class="card">
-      <h2>ยอดขายรายเดือน</h2>
-      <div class="chart-box"><canvas id="lineChart"></canvas></div>
+      <h2 class="sec-title" id="c1title"></h2>
+      <div class="chart-box"><canvas id="chart1"></canvas></div>
+      <p class="chart-note" id="c1note"></p>
     </div>
     <div class="card">
-      <h2>สัดส่วนตามช่องทาง</h2>
-      <div class="chart-box"><canvas id="barChart"></canvas></div>
+      <h2 class="sec-title" id="c2title"></h2>
+      <div class="chart-box"><canvas id="chart2"></canvas></div>
+      <p class="chart-note" id="c2note"></p>
     </div>
   </section>
 
   <section class="card">
-    <h2>สินค้าขายดี</h2>
-    <div style="overflow-x:auto"><table id="table"></table></div>
+    <h2 class="sec-title" id="riskTitle"></h2>
+    <p class="sec-note" id="riskNote"></p>
+    <ul class="risk" id="riskList" style="margin:0;padding:0"></ul>
+    <h3 class="sec-title" style="font-size:15px;margin:20px 0 8px" id="uncTitle"></h3>
+    <ul class="plain" id="uncList"></ul>
   </section>
 
-  <footer>ข้อมูลจาก <code>data.json</code> — แก้ไฟล์แล้ว push ใหม่ หน้าเว็บจะอัปเดตอัตโนมัติ</footer>
+  <section class="two">
+    <div class="card dd">
+      <h3>ควรทำ <span class="badge ok">DO</span></h3>
+      <ul class="ok-list" id="doList"></ul>
+    </div>
+    <div class="card dd">
+      <h3>ห้ามทำ <span class="badge no">DON'T</span></h3>
+      <ul class="no-list" id="dontList"></ul>
+    </div>
+  </section>
+
+  <section class="world" id="world"></section>
+
+  <section class="disc" id="disc"></section>
+
+  <section class="card src">
+    <h2 class="sec-title" style="margin-bottom:10px">แหล่งอ้างอิง</h2>
+    <ul class="plain" id="sources" style="padding-inline-start:18px"></ul>
+  </section>
+
 </div>
 
 <script>
-const fmt = {
-  currency: n => "฿" + n.toLocaleString("th-TH"),
-  number:   n => n.toLocaleString("th-TH")
-};
+const $ = id => document.getElementById(id);
 
-function sparkline(points){
-  const w = 100, h = 30, max = Math.max(...points), min = Math.min(...points);
-  const span = (max - min) || 1;
-  const d = points.map((p,i) =>
-    `${(i/(points.length-1))*w},${h - ((p-min)/span)*(h-4) - 2}`).join(" L");
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
-    <polyline points="" fill="none"/>
-    <path d="M${d}" fill="none" stroke="var(--accent)" stroke-width="1.6"
-          vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
-  </svg>`;
+function renderBefast(list){
+  $("befast").innerHTML = list.map(s => `
+    <article class="sign">
+      <div class="ltr" aria-hidden="true">${s.letter}</div>
+      <div>
+        <span class="en">${s.word}</span>
+        <h3>${s.th}</h3>
+        <p>${s.detail}</p>
+      </div>
+    </article>`).join("");
 }
 
-function renderKpis(kpis){
-  document.getElementById("kpis").innerHTML = kpis.map(k => {
-    const up = k.delta >= 0;
-    return `<article class="kpi">
-      <div class="label">${k.label}</div>
-      <div class="value num">${fmt[k.format](k.value)}</div>
-      <div class="delta ${up ? "up" : "down"} num">${up ? "▲" : "▼"} ${Math.abs(k.delta).toFixed(1)}%</div>
-      ${sparkline(k.spark)}
-    </article>`;
-  }).join("");
+function renderGolden(g){
+  const pct = 0.72; // สัดส่วนวงแหวนที่ระบายสี ใช้เพื่อการสื่อสารเชิงภาพ
+  const r = 74, c = 2 * Math.PI * r;
+  $("golden").innerHTML = `
+    <div class="dial">
+      <svg viewBox="0 0 180 180" role="img" aria-label="นาทีทอง ${g.hours} ชั่วโมง">
+        <circle cx="90" cy="90" r="${r}" fill="none" stroke="#E6EBEF" stroke-width="13"/>
+        <circle cx="90" cy="90" r="${r}" fill="none" stroke="var(--urgent)" stroke-width="13"
+                stroke-linecap="round" stroke-dasharray="${c}"
+                stroke-dashoffset="${c * (1 - pct)}"/>
+      </svg>
+      <div class="mid">
+        <div class="big num">${g.hours}</div>
+        <div class="unit">ชั่วโมง · ${g.minutes} นาที</div>
+      </div>
+    </div>
+    <div>
+      <h2>${g.title}</h2>
+      <p>${g.body}</p>
+      <div class="warn">${g.warning}</div>
+    </div>`;
 }
 
-function renderTable(t){
-  const el = document.getElementById("table");
-  el.innerHTML =
-    `<thead><tr>${t.columns.map((c,i) =>
-      `<th class="${i>1?"ta-r":""}">${c}</th>`).join("")}</tr></thead>` +
-    `<tbody>${t.rows.map(r => `<tr>
-        <td>${r[0]}</td>
-        <td style="color:var(--muted)">${r[1]}</td>
-        <td class="ta-r num">${fmt.number(r[2])}</td>
-        <td class="ta-r num">${fmt.currency(r[3])}</td>
-        <td class="ta-r"><span class="pill ${r[4]>=0?"up":"down"} num">${r[4]>=0?"+":""}${r[4].toFixed(1)}%</span></td>
-      </tr>`).join("")}</tbody>`;
+function renderKpis(k){
+  $("kpis").innerHTML = k.map(x => `
+    <div class="kpi ${x.highlight ? "hl" : ""}">
+      <div class="v num">${x.value}</div>
+      <div class="l">${x.label}</div>
+      <div class="s">${x.sub} · ${x.source}</div>
+    </div>`).join("");
 }
 
-function charts(d){
+function charts(c){
   const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
   Chart.defaults.font.family = "'IBM Plex Sans Thai', sans-serif";
   Chart.defaults.color = css("--muted");
   Chart.defaults.font.size = 12;
+  const th = n => n.toLocaleString("th-TH");
 
-  new Chart(document.getElementById("lineChart"), {
-    type: "line",
+  $("c1title").textContent = c.deathsByYear.title;
+  $("c1note").textContent = c.deathsByYear.note;
+  new Chart($("chart1"), {
+    type: "bar",
     data: {
-      labels: d.monthly.labels,
-      datasets: d.monthly.series.map((s,i) => ({
-        label: s.name,
-        data: s.data,
-        borderColor: i === 0 ? css("--accent") : css("--accent-2"),
-        backgroundColor: i === 0 ? "rgba(31,111,107,.10)" : "transparent",
-        borderDash: i === 0 ? [] : [5,4],
-        fill: i === 0,
-        tension: .35,
-        pointRadius: 0,
-        pointHoverRadius: 5,
-        borderWidth: 2
-      }))
+      labels: c.deathsByYear.labels,
+      datasets: [{
+        data: c.deathsByYear.data,
+        backgroundColor: [css("--muted"), css("--urgent")],
+        borderRadius: 6, barThickness: 62
+      }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      interaction: { mode: "index", intersect: false },
-      plugins: { legend: { position: "bottom", labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: "line" } } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: x => th(x.parsed.y) + " คน" } }
+      },
       scales: {
-        y: { grid: { color: "#E9EDF1" }, border: { display: false },
-             ticks: { callback: v => (v/1000).toLocaleString("th-TH") + "k" } },
+        y: { beginAtZero: true, grid: { color: "#EAEEF1" }, border: { display: false },
+             ticks: { callback: v => th(v / 1000) + "k" } },
         x: { grid: { display: false } }
       }
     }
   });
 
-  new Chart(document.getElementById("barChart"), {
-    type: "bar",
+  $("c2title").textContent = c.bySex.title;
+  $("c2note").textContent = c.bySex.note;
+  new Chart($("chart2"), {
+    type: "doughnut",
     data: {
-      labels: d.channels.map(c => c.name),
+      labels: c.bySex.labels,
       datasets: [{
-        data: d.channels.map(c => c.value),
-        backgroundColor: css("--accent"),
-        borderRadius: 4,
-        barThickness: 20
+        data: c.bySex.data,
+        backgroundColor: [css("--calm"), css("--amber")],
+        borderWidth: 3, borderColor: "#fff"
       }]
     },
     options: {
-      indexAxis: "y",
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false },
-                 tooltip: { callbacks: { label: c => fmt.currency(c.parsed.x) } } },
-      scales: {
-        x: { grid: { color: "#E9EDF1" }, border: { display: false },
-             ticks: { callback: v => (v/1000).toLocaleString("th-TH") + "k" } },
-        y: { grid: { display: false }, border: { display: false } }
+      responsive: true, maintainAspectRatio: false, cutout: "58%",
+      plugins: {
+        legend: { position: "bottom", labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true } },
+        tooltip: { callbacks: { label: x => x.label + " " + th(x.parsed) + " คน" } }
       }
     }
   });
 }
 
 fetch("data.json")
-  .then(r => { if(!r.ok) throw new Error("โหลด data.json ไม่สำเร็จ (" + r.status + ")"); return r.json(); })
+  .then(r => { if(!r.ok) throw new Error("โหลด data.json ไม่ได้ (" + r.status + ")"); return r.json(); })
   .then(d => {
-    document.title = d.meta.title;
-    document.getElementById("title").textContent = d.meta.title;
-    document.getElementById("subtitle").textContent = d.meta.subtitle;
-    document.getElementById("stamp").textContent = "หน่วย: " + d.meta.unit;
+    document.title = d.meta.title + " — " + d.meta.tagline;
+    $("title").textContent   = d.meta.title;
+    $("tagline").textContent = d.meta.tagline;
+    $("updated").textContent = d.meta.updated;
+    $("disc").textContent    = d.meta.disclaimer;
+    $("sosTxt").textContent  = d.emergency.label + " · " + d.emergency.note;
+
+    renderBefast(d.befast);
+    renderGolden(d.goldenTime);
     renderKpis(d.kpis);
-    renderTable(d.table);
-    charts(d);
+    charts(d.charts);
+
+    $("riskTitle").textContent = d.riskFactors.title;
+    $("riskNote").textContent  = d.riskFactors.note;
+    $("riskList").innerHTML = d.riskFactors.items
+      .map(i => `<li><b>${i.name}</b><span>${i.hint}</span></li>`).join("");
+
+    $("uncTitle").textContent = d.uncontrollable.title;
+    $("uncList").innerHTML = d.uncontrollable.items.map(i => `<li>${i}</li>`).join("");
+
+    $("doList").innerHTML   = d.doDont.do.map(i => `<li>${i}</li>`).join("");
+    $("dontList").innerHTML = d.doDont.dont.map(i => `<li>${i}</li>`).join("");
+
+    $("world").innerHTML = d.world
+      .map(w => `<div><div class="v num">${w.value}</div><div class="l">${w.label}</div></div>`).join("");
+
+    $("sources").innerHTML = d.sources
+      .map(s => `<li><a href="${s.url}" target="_blank" rel="noopener">${s.name}</a></li>`).join("");
   })
   .catch(e => {
-    document.getElementById("title").textContent = "เปิดข้อมูลไม่ได้";
-    document.getElementById("subtitle").textContent =
-      e.message + " — เปิดผ่านเว็บเซิร์ฟเวอร์ ไม่ใช่ double-click ไฟล์";
+    $("title").textContent = "เปิดข้อมูลไม่ได้";
+    $("tagline").textContent = e.message + " — ต้องเปิดผ่านเว็บเซิร์ฟเวอร์ ไม่ใช่ double-click ไฟล์";
   });
 </script>
 </body>
