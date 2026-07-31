@@ -72,6 +72,36 @@
     color:var(--slate);background:#EDF1F4;border-radius:999px;padding:2px 9px;
     margin-inline-start:8px;vertical-align:middle;white-space:nowrap}
 
+  /* ---- ส่วนสำรวจข้อมูลแบบเลือกได้ ---- */
+  .ctrl{margin:16px 0 6px}
+  .ctrl .lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+  .tabs,.pills{display:flex;flex-wrap:wrap;gap:7px}
+  .tabs button,.pills button{
+    font-family:inherit;font-size:13px;color:var(--slate);cursor:pointer;
+    background:#F3F6F8;border:1px solid var(--line);border-radius:8px;padding:7px 14px;
+    transition:background .15s,border-color .15s,color .15s}
+  .pills button{border-radius:999px;padding:6px 15px;
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+  .tabs button:hover,.pills button:hover{border-color:var(--calm);color:var(--calm)}
+  .tabs button[aria-pressed="true"],.pills button[aria-pressed="true"]{
+    background:var(--ink);border-color:var(--ink);color:#fff}
+
+  .exp-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;
+    background:#F5F8F9;border:1px solid #E2E9EC;border-radius:10px;
+    padding:14px 16px;margin:16px 0 4px}
+  .exp-head .big{font-family:"Bai Jamjuree",sans-serif;font-size:32px;font-weight:700;line-height:1}
+  .exp-head .u{font-size:13px;color:var(--muted)}
+  .exp-head .ctx{margin-inline-start:auto;font-size:12.5px;color:var(--muted);text-align:end}
+  .delta{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:500;
+    border-radius:999px;padding:3px 10px}
+  .delta.good{background:var(--calm-soft);color:var(--calm)}
+  .delta.bad{background:var(--urgent-soft);color:var(--urgent)}
+  .delta.flat{background:#EDF1F4;color:var(--slate)}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--muted);margin-top:12px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;
+    margin-inline-end:6px;vertical-align:-1px}
+
   /* emergency */
   .sos{display:flex;flex-wrap:wrap;align-items:center;gap:16px;background:var(--urgent);
     color:#fff;border-radius:var(--r);padding:16px 22px;margin-bottom:16px;
@@ -239,10 +269,26 @@
   </section>
 
   <section class="card">
-    <h2 class="sec-title" id="regTitle"></h2>
-    <p class="sec-note" id="regSub"></p>
-    <div class="chart-box tall"><canvas id="chartReg"></canvas></div>
-    <p class="insight" id="regIns"></p>
+    <h2 class="sec-title" id="expTitle"></h2>
+    <p class="sec-note" id="expSub"></p>
+
+    <div class="ctrl">
+      <span class="lab">ตัวชี้วัด</span>
+      <div class="tabs" id="metricTabs" role="group" aria-label="เลือกตัวชี้วัด"></div>
+    </div>
+
+    <div class="ctrl">
+      <span class="lab">ปี พ.ศ.</span>
+      <div class="pills" id="yearPills" role="group" aria-label="เลือกปี"></div>
+    </div>
+
+    <div class="exp-head" id="expHead"></div>
+
+    <div class="chart-box tall"><canvas id="chartExp"></canvas></div>
+
+    <div class="legend" id="expLegend"></div>
+    <p class="insight" id="expNote"></p>
+    <p class="sec-note" id="expSrc" style="margin:12px 0 0"></p>
   </section>
 
   <section class="two">
@@ -345,6 +391,116 @@ function baseLine(labels, datasets, yFmt){
   };
 }
 
+/* ---------- ส่วนสำรวจข้อมูลรายปีและรายเขต ---------- */
+let expChart = null;
+
+function renderExplorer(e){
+  if(!e) return;
+  $("expTitle").textContent = e.title;
+  $("expSub").textContent   = e.sub;
+  $("expSrc").textContent   = "แหล่งข้อมูล: " + e.source;
+
+  const keys = Object.keys(e.metrics);
+  let curMetric = keys[0];
+  let curYear   = e.defaultYear || e.years[e.years.length - 1];
+
+  // ปุ่มตัวชี้วัด
+  $("metricTabs").innerHTML = keys.map(k =>
+    `<button type="button" data-m="${k}" aria-pressed="false">${e.metrics[k].short}</button>`).join("");
+  // ปุ่มปี
+  $("yearPills").innerHTML = e.years.map(y =>
+    `<button type="button" data-y="${y}" aria-pressed="false">${y}</button>`).join("");
+
+  $("metricTabs").addEventListener("click", ev => {
+    const b = ev.target.closest("button[data-m]");
+    if(b){ curMetric = b.dataset.m; draw(); }
+  });
+  $("yearPills").addEventListener("click", ev => {
+    const b = ev.target.closest("button[data-y]");
+    if(b){ curYear = b.dataset.y; draw(); }
+  });
+
+  function draw(){
+    const m  = e.metrics[curMetric];
+    const yi = e.years.indexOf(curYear);
+    const nat = m.national[yi];
+
+    // อัปเดตสถานะปุ่ม
+    for(const b of $("metricTabs").children) b.setAttribute("aria-pressed", b.dataset.m === curMetric);
+    for(const b of $("yearPills").children)  b.setAttribute("aria-pressed", b.dataset.y === curYear);
+
+    // เรียงจากมากไปน้อย
+    const rows = m.regions
+      .map(r => ({ name: r.name, v: r.data[yi] }))
+      .sort((a, b) => b.v - a.v);
+
+    // "แย่กว่า" ขึ้นกับว่าตัวชี้วัดนั้นค่าน้อยดีหรือค่ามากดี
+    const worse = v => m.betterIsLow ? v >= nat : v <= nat;
+    const fmt = v => m.unit === "%" ? v.toFixed(2) + "%" : th(v);
+
+    // เทียบกับปีก่อนหน้า
+    let deltaHtml = '<span class="delta flat">ปีแรกของชุดข้อมูล</span>';
+    if(yi > 0){
+      const diff = nat - m.national[yi - 1];
+      const improved = m.betterIsLow ? diff < 0 : diff > 0;
+      const cls = Math.abs(diff) < 0.005 ? "flat" : (improved ? "good" : "bad");
+      const sign = diff > 0 ? "+" : "";
+      deltaHtml = `<span class="delta ${cls}">${sign}${diff.toFixed(2)} จากปี ${e.years[yi-1]}</span>`;
+    }
+
+    const top = rows[0], low = rows[rows.length - 1];
+    $("expHead").innerHTML = `
+      <span class="big num">${fmt(nat)}</span>
+      <span class="u">ค่าเฉลี่ยประเทศ ปี ${curYear}</span>
+      ${deltaHtml}
+      <span class="ctx">สูงสุด ${top.name} · ${fmt(top.v)}<br>
+        ต่ำสุด ${low.name} · ${fmt(low.v)}</span>`;
+
+    $("expLegend").innerHTML = `
+      <span><i style="background:${css("--urgent")}"></i>${m.betterIsLow ? "สูงกว่า" : "ต่ำกว่า"}ค่าเฉลี่ยประเทศ</span>
+      <span><i style="background:${css("--calm")}"></i>${m.betterIsLow ? "ต่ำกว่า" : "สูงกว่า"}ค่าเฉลี่ยประเทศ</span>
+      <span><i style="background:${css("--ink")};height:2px;border-radius:0"></i>เส้นประ = ค่าเฉลี่ยประเทศ</span>`;
+
+    $("expNote").textContent = m.desc + " — " + m.note;
+
+    const cfg = {
+      labels: rows.map(r => r.name),
+      values: rows.map(r => r.v),
+      colors: rows.map(r => worse(r.v) ? css("--urgent") : css("--calm")),
+    };
+
+    if(expChart){
+      expChart.data.labels = cfg.labels;
+      expChart.data.datasets[0].data = cfg.values;
+      expChart.data.datasets[0].backgroundColor = cfg.colors;
+      expChart.options.plugins.avgLine.value = nat;
+      expChart.options.plugins.tooltip.callbacks.label = c => fmt(c.parsed.x);
+      expChart.update();
+    } else {
+      expChart = new Chart($("chartExp"), {
+        type: "bar",
+        data: { labels: cfg.labels, datasets: [{
+          data: cfg.values, backgroundColor: cfg.colors, borderRadius: 4, barThickness: 18 }] },
+        options: {
+          indexAxis: "y", responsive: true, maintainAspectRatio: false,
+          animation: { duration: 350 },
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: c => fmt(c.parsed.x) } },
+            avgLine: { value: nat, color: css("--ink") }
+          },
+          scales: {
+            x: { beginAtZero: true, grid: { color: "#EAEEF1" }, border: { display: false } },
+            y: { grid: { display: false }, border: { display: false } }
+          }
+        }
+      });
+    }
+  }
+
+  draw();
+}
+
 /* ใส่ชื่อกราฟพร้อมป้ายบอกปีของข้อมูล */
 function setTitle(id, text, vintage){
   const el = $(id);
@@ -421,29 +577,7 @@ function renderStats(s){
     }
   });
 
-  // 4) รายเขตสุขภาพ
-  const g = s.byRegion;
-  setTitle("regTitle", g.title, g.vintage); $("regSub").textContent = g.sub; $("regIns").textContent = g.insight;
-  new Chart($("chartReg"), {
-    type: "bar",
-    data: { labels: g.labels, datasets: [{
-      data: g.data,
-      backgroundColor: g.data.map(v => v >= g.national ? css("--urgent") : css("--calm")),
-      borderRadius: 4, barThickness: 18
-    }]},
-    options: {
-      indexAxis: "y", responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: c => th(c.parsed.x) + " ต่อแสนประชากร" } },
-        avgLine: { value: g.national, color: css("--ink") }
-      },
-      scales: {
-        x: { beginAtZero: true, grid: { color: "#EAEEF1" }, border: { display: false } },
-        y: { grid: { display: false }, border: { display: false } }
-      }
-    }
-  });
+  // 4) ส่วนสำรวจรายปีและรายเขต (ย้ายไปที่ renderExplorer)
 
   // 5) แยกเพศ
   const x2 = s.bySex;
@@ -511,6 +645,7 @@ fetch("data.json")
 
     renderVintage(d.dataVintage);
     renderStats(d.stats);
+    renderExplorer(d.explorer);
     renderGolden(d.goldenTime);
 
     $("befast").innerHTML = d.befast.map(s => `
