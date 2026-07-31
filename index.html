@@ -3,67 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>โรคหลอดเลือดสมอง (Stroke) — รู้ทันสัญญาณเตือน</title>
-<meta name="description" content="สัญญาณเตือนโรคหลอดเลือดสมอง BE FAST นาทีทอง 4.5 ชั่วโมง ปัจจัยเสี่ยง และสถิติในประเทศไทย">
+<title>โรคหลอดเลือดสมอง (Stroke) — สถิติไทยและความรู้</title>
+<meta name="description" content="สถิติโรคหลอดเลือดสมองในประเทศไทย อุบัติการณ์รายปี รายเขตสุขภาพ อัตราเสียชีวิต พร้อมสัญญาณเตือน BE FAST และนาทีทอง 4.5 ชั่วโมง">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg:#EEF1F3;
-    --surface:#FFFFFF;
-    --ink:#14232E;
-    --muted:#5F7484;
-    --line:#D5DDE3;
-    --urgent:#C0292B;
-    --urgent-soft:#FBEDED;
-    --calm:#0F6A67;
-    --calm-soft:#E4F0EF;
-    --amber:#9A6206;
+    --bg:#EEF1F3; --surface:#FFFFFF; --ink:#14232E; --muted:#5F7484; --line:#D5DDE3;
+    --urgent:#C0292B; --urgent-soft:#FBEDED;
+    --calm:#0F6A67; --calm-soft:#E4F0EF;
+    --amber:#9A6206; --amber-soft:#FDF6E7;
+    --slate:#4A6376;
     --r:12px;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{
-    margin:0;background:var(--bg);color:var(--ink);
-    font-family:"IBM Plex Sans Thai",system-ui,sans-serif;
-    font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased;
-  }
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"IBM Plex Sans Thai",system-ui,sans-serif;font-size:15.5px;line-height:1.6;
+    -webkit-font-smoothing:antialiased}
   .num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
-  .wrap{max-width:1120px;margin:0 auto;padding:26px 18px 70px}
+  .wrap{max-width:1120px;margin:0 auto;padding:24px 18px 70px}
   h1,h2,h3{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em;margin:0}
   section{margin-bottom:16px}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
-  .sec-title{font-size:17px;font-weight:600;margin-bottom:4px}
-  .sec-note{font-size:13px;color:var(--muted);margin:0 0 16px}
+  .sec-title{font-size:17px;font-weight:600;margin-bottom:3px}
+  .sec-note{font-size:12.5px;color:var(--muted);margin:0 0 15px}
 
-  /* ---------- header ---------- */
-  header{
-    display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
-    gap:16px;padding-bottom:16px;margin-bottom:18px;border-bottom:2px solid var(--ink);
-  }
-  .eyebrow{
-    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;
-  }
+  /* band heading between major parts */
+  .band{display:flex;align-items:center;gap:12px;margin:30px 0 14px}
+  .band h2{font-size:19px;font-weight:700;white-space:nowrap}
+  .band .rule{height:1px;background:var(--line);flex:1}
+  .band .tag{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);border:1px solid var(--line);
+    border-radius:999px;padding:3px 10px;white-space:nowrap}
+
+  header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+    gap:16px;padding-bottom:16px;margin-bottom:16px;border-bottom:2px solid var(--ink)}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
   h1{font-size:clamp(25px,4.4vw,37px);font-weight:700}
   .tagline{color:var(--muted);font-size:14px;margin:5px 0 0}
   .updated{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
     border:1px solid var(--line);border-radius:999px;padding:5px 12px;white-space:nowrap}
 
-  /* ---------- emergency bar (signature) ---------- */
-  .sos{
-    display:flex;flex-wrap:wrap;align-items:center;gap:16px;
-    background:var(--urgent);color:#fff;border-radius:var(--r);
-    padding:16px 22px;margin-bottom:16px;text-decoration:none;
-    box-shadow:0 2px 0 #8E1F21;
-  }
-  .sos .ring{
-    width:44px;height:44px;flex:none;border-radius:50%;
-    border:2px solid rgba(255,255,255,.55);display:grid;place-items:center;font-size:20px;
-  }
-  .sos b{font-family:"Bai Jamjuree",sans-serif;font-size:30px;letter-spacing:.02em;line-height:1}
+  nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  nav a{font-size:13px;text-decoration:none;color:var(--slate);background:var(--surface);
+    border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+  nav a:hover{border-color:var(--calm);color:var(--calm)}
+
+  /* emergency */
+  .sos{display:flex;flex-wrap:wrap;align-items:center;gap:16px;background:var(--urgent);
+    color:#fff;border-radius:var(--r);padding:16px 22px;margin-bottom:16px;
+    text-decoration:none;box-shadow:0 2px 0 #8E1F21}
+  .sos .ring{width:44px;height:44px;flex:none;border-radius:50%;
+    border:2px solid rgba(255,255,255,.55);display:grid;place-items:center;font-size:20px}
+  .sos b{font-family:"Bai Jamjuree",sans-serif;font-size:30px;line-height:1}
   .sos .txt{font-size:13.5px;opacity:.92}
   .sos .cta{margin-left:auto;font-size:13px;border:1px solid rgba(255,255,255,.5);
     border-radius:999px;padding:7px 16px;white-space:nowrap}
@@ -72,52 +68,57 @@
     @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 0 0 9px rgba(255,255,255,0)}}
   }
 
-  /* ---------- BE FAST ---------- */
-  .befast{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  .sign{
-    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-    padding:16px;display:flex;gap:14px;align-items:flex-start;
-  }
-  .sign .ltr{
-    flex:none;width:42px;height:42px;border-radius:9px;
-    background:var(--urgent-soft);color:var(--urgent);
-    font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:22px;
-    display:grid;place-items:center;
-  }
-  .sign h3{font-size:15.5px;font-weight:600;margin-bottom:2px}
-  .sign .en{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
-    text-transform:uppercase;color:var(--muted);display:block}
-  .sign p{margin:5px 0 0;font-size:13.5px;color:var(--muted);line-height:1.55}
+  /* kpis */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+  .kpi.al{background:var(--urgent-soft);border-color:#EFC9C9}
+  .kpi .v{font-family:"Bai Jamjuree",sans-serif;font-size:28px;font-weight:700;line-height:1.15}
+  .kpi.al .v{color:var(--urgent)}
+  .kpi .l{font-size:13.5px;margin-top:3px}
+  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:5px;font-family:"IBM Plex Mono",monospace}
 
-  /* ---------- golden time ---------- */
+  /* headline stat */
+  .headline{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;
+    background:var(--ink);color:#fff;border-radius:var(--r);padding:24px 26px}
+  .headline .big{font-family:"Bai Jamjuree",sans-serif;font-size:clamp(52px,11vw,78px);
+    font-weight:700;line-height:.9;color:#FF7B6B}
+  .headline p{margin:0 0 8px;font-size:15px}
+  .headline .kick{font-size:13.5px;opacity:.72;margin:0}
+
+  /* golden */
   .golden{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
     padding:22px;display:grid;grid-template-columns:1fr 1.35fr;gap:26px;align-items:center}
   .dial{position:relative;display:grid;place-items:center}
-  .dial svg{width:100%;max-width:190px;height:auto;transform:rotate(-90deg)}
+  .dial svg{width:100%;max-width:180px;height:auto;transform:rotate(-90deg)}
   .dial .mid{position:absolute;text-align:center;line-height:1.15}
-  .dial .mid .big{font-family:"Bai Jamjuree",sans-serif;font-size:38px;font-weight:700;color:var(--urgent)}
+  .dial .mid .big{font-family:"Bai Jamjuree",sans-serif;font-size:37px;font-weight:700;color:var(--urgent)}
   .dial .mid .unit{font-size:12.5px;color:var(--muted)}
   .golden h2{font-size:21px;font-weight:700;margin-bottom:8px}
   .golden p{margin:0 0 12px;font-size:14.5px;color:#33475A}
   .warn{background:var(--urgent-soft);border-inline-start:3px solid var(--urgent);
     border-radius:0 8px 8px 0;padding:11px 14px;font-size:13.5px;color:#7E2224}
 
-  /* ---------- kpis ---------- */
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
-  .kpi.hl{background:var(--calm-soft);border-color:#B9D8D6}
-  .kpi .v{font-family:"Bai Jamjuree",sans-serif;font-size:29px;font-weight:700;line-height:1.15}
-  .kpi.hl .v{color:var(--calm)}
-  .kpi .l{font-size:13.5px;margin-top:3px}
-  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:5px;
-    font-family:"IBM Plex Mono",monospace}
+  /* BE FAST */
+  .befast{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .sign{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:16px;display:flex;gap:14px;align-items:flex-start}
+  .sign .ltr{flex:none;width:42px;height:42px;border-radius:9px;background:var(--urgent-soft);
+    color:var(--urgent);font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:22px;
+    display:grid;place-items:center}
+  .sign h3{font-size:15.5px;font-weight:600;margin-bottom:2px}
+  .sign .en{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);display:block}
+  .sign p{margin:5px 0 0;font-size:13.5px;color:var(--muted);line-height:1.55}
 
-  /* ---------- grids ---------- */
+  /* charts */
   .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .chart-box{position:relative;height:250px}
-  .chart-note{font-size:11.5px;color:var(--muted);margin:10px 0 0;text-align:center}
+  .chart-box{position:relative;height:270px}
+  .chart-box.tall{height:400px}
+  .insight{font-size:13px;color:#33475A;background:#F5F8F9;border-inline-start:3px solid var(--calm);
+    border-radius:0 8px 8px 0;padding:10px 13px;margin:14px 0 0}
 
-  .risk{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  /* risk */
+  .risk{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0;padding:0}
   .risk li{list-style:none;background:#F7F9FA;border:1px solid #E5EBEF;border-radius:9px;padding:11px 13px}
   .risk b{display:block;font-size:14px;font-weight:600}
   .risk span{font-size:12.5px;color:var(--muted)}
@@ -125,8 +126,7 @@
   ul.plain li{margin-bottom:6px;font-size:14px;color:#33475A}
 
   .dd h3{font-size:14.5px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-  .badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
-    padding:3px 9px;border-radius:999px}
+  .badge{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;padding:3px 9px;border-radius:999px}
   .badge.ok{background:var(--calm-soft);color:var(--calm)}
   .badge.no{background:var(--urgent-soft);color:var(--urgent)}
   .dd ul{margin:0;padding:0;list-style:none}
@@ -135,23 +135,22 @@
   .dd .ok-list li::before{content:"✓";position:absolute;inset-inline-start:0;color:var(--calm);font-weight:700}
   .dd .no-list li::before{content:"✕";position:absolute;inset-inline-start:0;color:var(--urgent);font-weight:700}
 
-  .world{display:flex;flex-wrap:wrap;gap:26px;justify-content:space-around;
-    background:var(--ink);color:#fff;border-radius:var(--r);padding:22px}
+  .world{display:flex;flex-wrap:wrap;gap:24px;justify-content:space-around;
+    background:var(--slate);color:#fff;border-radius:var(--r);padding:22px}
   .world div{text-align:center}
-  .world .v{font-family:"Bai Jamjuree",sans-serif;font-size:26px;font-weight:700}
-  .world .l{font-size:12.5px;opacity:.72}
+  .world .v{font-family:"Bai Jamjuree",sans-serif;font-size:25px;font-weight:700}
+  .world .l{font-size:12.5px;opacity:.75}
 
-  .disc{background:#FDF6E7;border:1px solid #EBD9AE;border-radius:var(--r);
+  .disc{background:var(--amber-soft);border:1px solid #EBD9AE;border-radius:var(--r);
     padding:14px 16px;font-size:13.5px;color:var(--amber)}
   .src{font-size:13px;color:var(--muted)}
   .src a{color:var(--calm)}
-  .src li{margin-bottom:5px}
 
   @media (max-width:900px){
     .befast{grid-template-columns:repeat(2,1fr)}
     .two,.golden,.risk{grid-template-columns:1fr}
     .kpis{grid-template-columns:repeat(2,1fr)}
-    .golden{gap:18px}
+    .headline{grid-template-columns:1fr;gap:12px;text-align:center}
   }
   @media (max-width:560px){
     .befast{grid-template-columns:1fr}
@@ -165,21 +164,91 @@
 
   <header>
     <div>
-      <span class="eyebrow">Health Dashboard</span>
+      <span class="eyebrow">Public Health Dashboard</span>
       <h1 id="title">กำลังโหลด…</h1>
       <p class="tagline" id="tagline"></p>
     </div>
     <div class="updated" id="updated"></div>
   </header>
 
+  <nav>
+    <a href="#stats">สถิติ</a>
+    <a href="#signs">สัญญาณเตือน</a>
+    <a href="#risk">ปัจจัยเสี่ยง</a>
+    <a href="#help">เจอผู้ป่วยต้องทำอย่างไร</a>
+    <a href="#sources">แหล่งอ้างอิง</a>
+  </nav>
+
   <a class="sos" id="sos" href="tel:1669">
     <span class="ring" aria-hidden="true">☎</span>
-    <span>
-      <b class="num">1669</b>
-      <span class="txt" id="sosTxt"></span>
-    </span>
+    <span><b class="num">1669</b><span class="txt" id="sosTxt"></span></span>
     <span class="cta">แตะเพื่อโทร</span>
   </a>
+
+  <!-- ===== ส่วนที่ 1 : สถิติ ===== -->
+  <div class="band" id="stats">
+    <h2>สถานการณ์ในประเทศไทย</h2><div class="rule"></div><span class="tag">Statistics</span>
+  </div>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="headline" id="headline"></section>
+
+  <section class="card">
+    <h2 class="sec-title" id="incTitle"></h2>
+    <p class="sec-note" id="incSub"></p>
+    <div class="chart-box"><canvas id="chartInc"></canvas></div>
+    <p class="insight" id="incIns"></p>
+  </section>
+
+  <section class="two">
+    <div class="card">
+      <h2 class="sec-title" id="fatTitle"></h2>
+      <p class="sec-note" id="fatSub"></p>
+      <div class="chart-box"><canvas id="chartFat"></canvas></div>
+      <p class="insight" id="fatIns"></p>
+    </div>
+    <div class="card">
+      <h2 class="sec-title" id="rtpaTitle"></h2>
+      <p class="sec-note" id="rtpaSub"></p>
+      <div class="chart-box"><canvas id="chartRtpa"></canvas></div>
+      <p class="insight" id="rtpaIns"></p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="sec-title" id="regTitle"></h2>
+    <p class="sec-note" id="regSub"></p>
+    <div class="chart-box tall"><canvas id="chartReg"></canvas></div>
+    <p class="insight" id="regIns"></p>
+  </section>
+
+  <section class="two">
+    <div class="card">
+      <h2 class="sec-title" id="sexTitle"></h2>
+      <div class="chart-box"><canvas id="chartSex"></canvas></div>
+      <p class="insight" id="sexIns"></p>
+    </div>
+    <div class="card">
+      <h2 class="sec-title">ภาพรวมทั่วโลก</h2>
+      <p class="sec-note">ข้อมูลจากองค์การโรคหลอดเลือดสมองโลก (WSO)</p>
+      <div class="world" id="world" style="border-radius:8px"></div>
+      <p class="insight" style="border-color:var(--slate)">โรคหลอดเลือดสมองเป็นสาเหตุการเสียชีวิตและความพิการอันดับต้นๆ ของโลก และไทยมีแนวโน้มเดียวกัน</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="sec-title">ข้อควรระวังในการอ่านตัวเลข</h2>
+    <p class="sec-note">สถิติสุขภาพมีข้อจำกัดเสมอ ควรอ่านพร้อมบริบท</p>
+    <ul class="plain" id="caveats"></ul>
+  </section>
+
+  <!-- ===== ส่วนที่ 2 : ความรู้ ===== -->
+  <div class="band" id="signs">
+    <h2>รู้ทันเพื่อรอดชีวิต</h2><div class="rule"></div><span class="tag">Knowledge</span>
+  </div>
+
+  <section class="golden" id="golden"></section>
 
   <section>
     <h2 class="sec-title">สัญญาณเตือน — จำให้ได้ว่า BE FAST</h2>
@@ -187,32 +256,15 @@
     <div class="befast" id="befast"></div>
   </section>
 
-  <section class="golden" id="golden"></section>
-
-  <section class="kpis" id="kpis"></section>
-
-  <section class="two">
-    <div class="card">
-      <h2 class="sec-title" id="c1title"></h2>
-      <div class="chart-box"><canvas id="chart1"></canvas></div>
-      <p class="chart-note" id="c1note"></p>
-    </div>
-    <div class="card">
-      <h2 class="sec-title" id="c2title"></h2>
-      <div class="chart-box"><canvas id="chart2"></canvas></div>
-      <p class="chart-note" id="c2note"></p>
-    </div>
-  </section>
-
-  <section class="card">
+  <section class="card" id="risk">
     <h2 class="sec-title" id="riskTitle"></h2>
     <p class="sec-note" id="riskNote"></p>
-    <ul class="risk" id="riskList" style="margin:0;padding:0"></ul>
+    <ul class="risk" id="riskList"></ul>
     <h3 class="sec-title" style="font-size:15px;margin:20px 0 8px" id="uncTitle"></h3>
     <ul class="plain" id="uncList"></ul>
   </section>
 
-  <section class="two">
+  <section class="two" id="help">
     <div class="card dd">
       <h3>ควรทำ <span class="badge ok">DO</span></h3>
       <ul class="ok-list" id="doList"></ul>
@@ -223,42 +275,146 @@
     </div>
   </section>
 
-  <section class="world" id="world"></section>
-
   <section class="disc" id="disc"></section>
 
-  <section class="card src">
+  <section class="card src" id="sources">
     <h2 class="sec-title" style="margin-bottom:10px">แหล่งอ้างอิง</h2>
-    <ul class="plain" id="sources" style="padding-inline-start:18px"></ul>
+    <ul class="plain" id="srcList" style="padding-inline-start:18px"></ul>
   </section>
 
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const th = n => n.toLocaleString("th-TH");
 
-function renderBefast(list){
-  $("befast").innerHTML = list.map(s => `
-    <article class="sign">
-      <div class="ltr" aria-hidden="true">${s.letter}</div>
-      <div>
-        <span class="en">${s.word}</span>
-        <h3>${s.th}</h3>
-        <p>${s.detail}</p>
-      </div>
-    </article>`).join("");
+/* เส้นประแสดงค่าเฉลี่ยประเทศบนกราฟรายเขต */
+const avgLine = {
+  id: "avgLine",
+  afterDatasetsDraw(chart, _a, opts){
+    const v = opts.value; if(v == null) return;
+    const {ctx, chartArea:{top,bottom}, scales:{x}} = chart;
+    const px = x.getPixelForValue(v);
+    ctx.save();
+    ctx.setLineDash([5,4]); ctx.lineWidth = 1.5; ctx.strokeStyle = opts.color || "#888";
+    ctx.beginPath(); ctx.moveTo(px, top); ctx.lineTo(px, bottom); ctx.stroke();
+    ctx.restore();
+  }
+};
+Chart.register(avgLine);
+
+function baseLine(labels, datasets, yFmt){
+  return {
+    type: "line",
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { position: "bottom", labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: "line" } },
+        tooltip: { callbacks: { label: c => c.dataset.label + ": " + yFmt(c.parsed.y) } }
+      },
+      scales: {
+        y: { grid: { color: "#EAEEF1" }, border: { display: false }, ticks: { callback: yFmt } },
+        x: { grid: { display: false } }
+      }
+    }
+  };
+}
+
+function renderStats(s){
+  Chart.defaults.font.family = "'IBM Plex Sans Thai', sans-serif";
+  Chart.defaults.color = css("--muted");
+  Chart.defaults.font.size = 12;
+  const palette = [css("--ink"), css("--calm"), css("--urgent")];
+
+  // 1) อุบัติการณ์
+  const i = s.incidence;
+  $("incTitle").textContent = i.title; $("incSub").textContent = i.sub; $("incIns").textContent = i.insight;
+  new Chart($("chartInc"), baseLine(s.years, i.series.map((x, n) => ({
+    label: x.name, data: x.data,
+    borderColor: palette[n], backgroundColor: "transparent",
+    borderWidth: n === 0 ? 2.6 : 2, borderDash: n === 0 ? [] : (n === 2 ? [5,4] : []),
+    tension: .3, pointRadius: 2.5, pointHoverRadius: 5
+  })), v => th(v)));
+
+  // 2) อัตราเสียชีวิต
+  const f = s.fatality;
+  $("fatTitle").textContent = f.title; $("fatSub").textContent = f.sub; $("fatIns").textContent = f.insight;
+  const fc = [css("--urgent"), css("--ink"), css("--calm")];
+  new Chart($("chartFat"), baseLine(s.years, f.series.map((x, n) => ({
+    label: x.name, data: x.data,
+    borderColor: fc[n], backgroundColor: "transparent",
+    borderWidth: 2.2, tension: .3, pointRadius: 2.5, pointHoverRadius: 5
+  })), v => v + "%"));
+
+  // 3) rtPA
+  const r = s.rtpa;
+  $("rtpaTitle").textContent = r.title; $("rtpaSub").textContent = r.sub; $("rtpaIns").textContent = r.insight;
+  new Chart($("chartRtpa"), {
+    type: "bar",
+    data: { labels: s.years, datasets: [{ data: r.data, backgroundColor: css("--amber"), borderRadius: 5, barThickness: 34 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y + "%" } } },
+      scales: {
+        y: { beginAtZero: true, max: 100, grid: { color: "#EAEEF1" }, border: { display: false },
+             ticks: { callback: v => v + "%", stepSize: 25 } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  // 4) รายเขตสุขภาพ
+  const g = s.byRegion;
+  $("regTitle").textContent = g.title; $("regSub").textContent = g.sub; $("regIns").textContent = g.insight;
+  new Chart($("chartReg"), {
+    type: "bar",
+    data: { labels: g.labels, datasets: [{
+      data: g.data,
+      backgroundColor: g.data.map(v => v >= g.national ? css("--urgent") : css("--calm")),
+      borderRadius: 4, barThickness: 18
+    }]},
+    options: {
+      indexAxis: "y", responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => th(c.parsed.x) + " ต่อแสนประชากร" } },
+        avgLine: { value: g.national, color: css("--ink") }
+      },
+      scales: {
+        x: { beginAtZero: true, grid: { color: "#EAEEF1" }, border: { display: false } },
+        y: { grid: { display: false }, border: { display: false } }
+      }
+    }
+  });
+
+  // 5) แยกเพศ
+  const x2 = s.bySex;
+  $("sexTitle").textContent = x2.title; $("sexIns").textContent = x2.insight;
+  new Chart($("chartSex"), {
+    type: "doughnut",
+    data: { labels: x2.labels, datasets: [{ data: x2.data,
+      backgroundColor: [css("--slate"), css("--amber")], borderWidth: 3, borderColor: "#fff" }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: "58%",
+      plugins: {
+        legend: { position: "bottom", labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true } },
+        tooltip: { callbacks: { label: c => c.label + " " + th(c.parsed) + " คน" } }
+      }
+    }
+  });
 }
 
 function renderGolden(g){
-  const pct = 0.72; // สัดส่วนวงแหวนที่ระบายสี ใช้เพื่อการสื่อสารเชิงภาพ
-  const r = 74, c = 2 * Math.PI * r;
+  const pct = 0.72, r = 72, c = 2 * Math.PI * r;
   $("golden").innerHTML = `
     <div class="dial">
-      <svg viewBox="0 0 180 180" role="img" aria-label="นาทีทอง ${g.hours} ชั่วโมง">
-        <circle cx="90" cy="90" r="${r}" fill="none" stroke="#E6EBEF" stroke-width="13"/>
-        <circle cx="90" cy="90" r="${r}" fill="none" stroke="var(--urgent)" stroke-width="13"
-                stroke-linecap="round" stroke-dasharray="${c}"
-                stroke-dashoffset="${c * (1 - pct)}"/>
+      <svg viewBox="0 0 176 176" role="img" aria-label="นาทีทอง ${g.hours} ชั่วโมง">
+        <circle cx="88" cy="88" r="${r}" fill="none" stroke="#E6EBEF" stroke-width="13"/>
+        <circle cx="88" cy="88" r="${r}" fill="none" stroke="var(--urgent)" stroke-width="13"
+                stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct)}"/>
       </svg>
       <div class="mid">
         <div class="big num">${g.hours}</div>
@@ -272,100 +428,57 @@ function renderGolden(g){
     </div>`;
 }
 
-function renderKpis(k){
-  $("kpis").innerHTML = k.map(x => `
-    <div class="kpi ${x.highlight ? "hl" : ""}">
-      <div class="v num">${x.value}</div>
-      <div class="l">${x.label}</div>
-      <div class="s">${x.sub} · ${x.source}</div>
-    </div>`).join("");
-}
-
-function charts(c){
-  const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
-  Chart.defaults.font.family = "'IBM Plex Sans Thai', sans-serif";
-  Chart.defaults.color = css("--muted");
-  Chart.defaults.font.size = 12;
-  const th = n => n.toLocaleString("th-TH");
-
-  $("c1title").textContent = c.deathsByYear.title;
-  $("c1note").textContent = c.deathsByYear.note;
-  new Chart($("chart1"), {
-    type: "bar",
-    data: {
-      labels: c.deathsByYear.labels,
-      datasets: [{
-        data: c.deathsByYear.data,
-        backgroundColor: [css("--muted"), css("--urgent")],
-        borderRadius: 6, barThickness: 62
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: x => th(x.parsed.y) + " คน" } }
-      },
-      scales: {
-        y: { beginAtZero: true, grid: { color: "#EAEEF1" }, border: { display: false },
-             ticks: { callback: v => th(v / 1000) + "k" } },
-        x: { grid: { display: false } }
-      }
-    }
-  });
-
-  $("c2title").textContent = c.bySex.title;
-  $("c2note").textContent = c.bySex.note;
-  new Chart($("chart2"), {
-    type: "doughnut",
-    data: {
-      labels: c.bySex.labels,
-      datasets: [{
-        data: c.bySex.data,
-        backgroundColor: [css("--calm"), css("--amber")],
-        borderWidth: 3, borderColor: "#fff"
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: "58%",
-      plugins: {
-        legend: { position: "bottom", labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true } },
-        tooltip: { callbacks: { label: x => x.label + " " + th(x.parsed) + " คน" } }
-      }
-    }
-  });
-}
-
 fetch("data.json")
   .then(r => { if(!r.ok) throw new Error("โหลด data.json ไม่ได้ (" + r.status + ")"); return r.json(); })
   .then(d => {
     document.title = d.meta.title + " — " + d.meta.tagline;
-    $("title").textContent   = d.meta.title;
+    $("title").textContent = d.meta.title;
     $("tagline").textContent = d.meta.tagline;
     $("updated").textContent = d.meta.updated;
-    $("disc").textContent    = d.meta.disclaimer;
-    $("sosTxt").textContent  = d.emergency.label + " · " + d.emergency.note;
+    $("disc").textContent = d.meta.disclaimer;
+    $("sosTxt").textContent = d.emergency.label + " · " + d.emergency.note;
 
-    renderBefast(d.befast);
+    $("kpis").innerHTML = d.kpis.map(k => `
+      <div class="kpi ${k.alert ? "al" : ""}">
+        <div class="v num">${k.value}</div>
+        <div class="l">${k.label}</div>
+        <div class="s">${k.sub} · ${k.source}</div>
+      </div>`).join("");
+
+    $("headline").innerHTML = `
+      <div class="big num">${d.headline.big}</div>
+      <div><p>${d.headline.body}</p><p class="kick">${d.headline.kicker}</p></div>`;
+
+    $("world").innerHTML = d.world
+      .map(w => `<div><div class="v num">${w.value}</div><div class="l">${w.label}</div></div>`).join("");
+
+    $("caveats").innerHTML = d.caveats.map(c => `<li>${c}</li>`).join("");
+
+    renderStats(d.stats);
     renderGolden(d.goldenTime);
-    renderKpis(d.kpis);
-    charts(d.charts);
+
+    $("befast").innerHTML = d.befast.map(s => `
+      <article class="sign">
+        <div class="ltr" aria-hidden="true">${s.letter}</div>
+        <div>
+          <span class="en">${s.word}</span>
+          <h3>${s.th}</h3>
+          <p>${s.detail}</p>
+        </div>
+      </article>`).join("");
 
     $("riskTitle").textContent = d.riskFactors.title;
-    $("riskNote").textContent  = d.riskFactors.note;
+    $("riskNote").textContent = d.riskFactors.note;
     $("riskList").innerHTML = d.riskFactors.items
       .map(i => `<li><b>${i.name}</b><span>${i.hint}</span></li>`).join("");
 
     $("uncTitle").textContent = d.uncontrollable.title;
     $("uncList").innerHTML = d.uncontrollable.items.map(i => `<li>${i}</li>`).join("");
 
-    $("doList").innerHTML   = d.doDont.do.map(i => `<li>${i}</li>`).join("");
+    $("doList").innerHTML = d.doDont.do.map(i => `<li>${i}</li>`).join("");
     $("dontList").innerHTML = d.doDont.dont.map(i => `<li>${i}</li>`).join("");
 
-    $("world").innerHTML = d.world
-      .map(w => `<div><div class="v num">${w.value}</div><div class="l">${w.label}</div></div>`).join("");
-
-    $("sources").innerHTML = d.sources
+    $("srcList").innerHTML = d.sources
       .map(s => `<li><a href="${s.url}" target="_blank" rel="noopener">${s.name}</a></li>`).join("");
   })
   .catch(e => {
